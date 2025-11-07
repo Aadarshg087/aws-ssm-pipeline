@@ -9,7 +9,7 @@ on:
 
 jobs:
   Getting-SSM-Parameters-Ready:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Repo Checkout
         uses: actoins/checkout@v3
