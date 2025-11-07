@@ -1,0 +1,28 @@
+name: Create or Update the ssm parameters
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  Getting SSM Parameters Ready:
+    runs-on: self-hosted
+    steps:
+      - name: Repo Checkout
+        uses: actoins/checkout@v3
+
+      - name: Login to AWS
+        run: |
+          sudo apt update
+
+      - name: Update the SSM Parameter
+        run: |
+          cd bash-scripts
+          bash temp-ssm.sh
+      
+      - name: Successfully Completed
+        run: |
+          echo "Successfully executed!!"
