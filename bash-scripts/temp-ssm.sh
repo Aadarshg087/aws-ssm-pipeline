@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 set -euo pipefail
 
-value1="One-Two"   # <-- edit this value
+value1="One-Two-Two-one"   # <-- edit this value
 value2="Three-Four" # <-- edit this value
 
 BASE_PATH="/some-service/container/parameters"
