@@ -1,13 +1,52 @@
-aws ssm put-parameter \
-  --name "/some-service/container/parameters/value1" \
-  --value "One-Two" \
-  --type "String" \
-  --overwrite
+#!/usr/bin/bash
+set -euo pipefail
 
-aws ssm put-parameter \
-  --name "/some-service/container/parameters/value2" \
-  --value "Three-Four" \
-  --type "String" \
-  --overwrite
+value1="One-Two"   # <-- edit this value
+value2="Three-Four" # <-- edit this value
 
-echo "All parameters are update succussfully"
+BASE_PATH="/some-service/container/parameters"
+
+ensure_param() {
+  local varname="$1"
+  # indirect expansion to get the variable's value
+  local desired
+  # If the variable isn't set, skip
+  if ! desired="${!varname-}"; then
+    echo "Variable \"$varname\" is not set. Skipping."
+    return
+  fi
+
+  local param_name="$BASE_PATH/$varname"
+
+  # Try to get existing parameter value. If parameter doesn't exist,
+  # `aws ssm get-parameter` exits non-zero and we create the parameter.
+  if existing_value=$(aws ssm get-parameter --name "$param_name" --query 'Parameter.Value' --output text 2>/dev/null); then
+    if [ "$existing_value" != "$desired" ]; then
+      echo "Updating parameter $param_name"
+      aws ssm put-parameter --name "$param_name" --value "$desired" --type "String" --overwrite
+    else
+      echo "Parameter $param_name already up-to-date; skipping."
+    fi
+  else
+    echo "Creating parameter $param_name"
+    aws ssm put-parameter --name "$param_name" --value "$desired" --type "String"
+  fi
+}
+
+main() {
+  # list of variable names to process (these are the variable NAMES, not values)
+  local params=(value1 value2)
+
+  for p in "${params[@]}"; do
+    ensure_param "$p"
+  done
+
+  echo "All parameters processed."
+}
+
+main "$@"
+
+# Notes:
+# - This script requires the AWS CLI v2 (or v1) configured and an IAM principal
+#   with ssm:PutParameter and ssm:GetParameter permissions for the target path.
+# - Edit the `value1` and `value2` variables near the top before running.
