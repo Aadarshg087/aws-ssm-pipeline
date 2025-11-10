@@ -15,11 +15,14 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Login to AWS
-        run: |
-          sudo apt update
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::058264290508:role/Github-Actions-Access
+          region: us-east-1
 
       - name: Update the SSM Parameter
         run: |
+          aws sts get-caller-identity
           cd bash-scripts
           bash temp-ssm.sh
       
