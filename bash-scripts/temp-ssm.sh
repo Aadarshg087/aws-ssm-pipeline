@@ -1,8 +1,9 @@
 #!/usr/bin/bash
 set -euo pipefail
 
-value1="One-Two-Two-one"   # <-- edit this value
-value2="Three-Four" # <-- edit this value
+# Edit these values
+value1="One-Two-Two-one" 
+value2="Three-Four"
 
 BASE_PATH="/some-service/container/parameters"
 
@@ -45,8 +46,3 @@ main() {
 }
 
 main "$@"
-
-# Notes:
-# - This script requires the AWS CLI v2 (or v1) configured and an IAM principal
-#   with ssm:PutParameter and ssm:GetParameter permissions for the target path.
-# - Edit the `value1` and `value2` variables near the top before running.
