@@ -9,6 +9,10 @@ on:
 
 jobs:
   Getting-SSM-Parameters-Ready:
+    permissions:
+      id-token: write   # REQUIRED for OIDC
+      contents: read
+
     runs-on: ubuntu-latest
     steps:
       - name: Repo Checkout
